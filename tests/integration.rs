@@ -1,12 +1,13 @@
-use doxidize::doxidize;
+use doxidize::*;
 
 // just a smoke test that the proc macro can indeed be used like this.
 // the real tests are in the macro expansion tests.
 
-#[doxidize]
 /// hello
+#[arguments]
 ///      this
 ///          is doc
+#[doxidize]
 fn foo(
     /// some comments
     /// more comments

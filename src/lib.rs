@@ -10,8 +10,14 @@ pub fn doxidize(
 ) -> proc_macro::TokenStream {
     let mut function: ItemFn = parse_macro_input!(item as ItemFn);
 
+    // will contain the docs comments for each documented function parameter
+    // together with the identifier of the function parameter.
     let mut parameter_docs =
         Vec::<(&Ident, Vec<Attribute>)>::with_capacity(function.sig.inputs.len());
+
+    for attr in function.attrs.iter() {
+        println!("attr: {:?}", attr.path());
+    }
 
     // extrac the doc attributes on the function itself
     let function_docs = extract_doc_attrs(&mut function.attrs);
@@ -70,4 +76,16 @@ pub fn doxidize(
         #function
     }
     .into()
+}
+
+// helper attribute
+//@todo document
+#[proc_macro_attribute]
+pub fn arguments(
+    _attr: proc_macro::TokenStream,
+    item: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
+    todo!("make sure this attribute comes after doxidize")
+    //@todo and also make sure that it does not occur multiple times
+    item
 }
