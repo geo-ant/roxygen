@@ -82,9 +82,22 @@ pub fn doxidize(
 //@todo document
 #[proc_macro_attribute]
 pub fn arguments(
-    _attr: proc_macro::TokenStream,
+    attr: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
+    let mut function: ItemFn = parse_macro_input!(item as ItemFn);
+
+    // enforce that this macro comes after doxidize, which means it
+    // cannot see the doxidize attribute
+    let result = function.attrs.into_iter().try_fold((),|cum, attr| {
+        cum?;
+       if attr.path().is_ident("doxidize") {
+           Err(syn::Error::new_spanned(&attr.path(),"The #[doxidize] macro must come before this attribute. Place it on top of the doc comments of the function."))
+        } else {
+            Ok(())
+        }
+    }); 
+
     todo!("make sure this attribute comes after doxidize")
     //@todo and also make sure that it does not occur multiple times
     item
