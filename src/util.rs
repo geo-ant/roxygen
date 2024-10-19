@@ -70,6 +70,7 @@ pub fn extract_fn_doc_attrs(attrs: &mut Vec<Attribute>) -> Result<FunctionDocs, 
     while idx < attrs.len() {
         let current_attr = attrs.get(idx).unwrap();
         if is_arguments_section(current_attr) {
+            idx += 1;
             break;
         }
         if current_attr.path().is_ident("doc") {

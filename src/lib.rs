@@ -106,10 +106,7 @@ pub fn arguments_section(
 
     // enforce that this macro comes after doxidize, which means it
     // cannot see the doxidize attribute
-    let maybe_doxidize = function
-        .attrs
-        .iter()
-        .find(|attr| is_arguments_section(attr));
+    let maybe_doxidize = function.attrs.iter().find(|attr| is_doxidize_main(attr));
     if let Some(attr) = maybe_doxidize {
         syn::Error::new_spanned(&attr,"The #[doxidize] attribute must come before the arguments section attribute.\nPlace it on top of the doc comments of the function.").into_compile_error().into()
     } else {
@@ -122,4 +119,11 @@ pub fn arguments_section(
 #[inline(always)]
 fn is_arguments_section(attr: &Attribute) -> bool {
     attr.path().is_ident("arguments_section")
+}
+
+/// check whether an attribute is the raw #[doxidize] main attribute.
+/// Stuck into this function, so I can refactor this logic
+#[inline(always)]
+fn is_doxidize_main(attr: &Attribute) -> bool {
+    attr.path().is_ident("doxidize")
 }
