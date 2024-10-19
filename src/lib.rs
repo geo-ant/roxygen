@@ -47,7 +47,7 @@ pub fn doxidize(
     if parameter_docs.is_empty() {
         return syn::Error::new_spanned(
             function.sig.ident,
-            "function has no documented parameters",
+            "Function has no documented arguments.\nDocument at least one function argument.",
         )
         .into_compile_error()
         .into();
