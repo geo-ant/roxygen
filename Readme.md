@@ -35,9 +35,9 @@ like so:
 /// * `nrows`: the number of rows in the image
 /// * `ncols`: the number of columns in the image
 /// * `sums`:  an out buffer into which the
-///   results of the sum of the rows are
-///   placed. Must have space for `nrows`
-///   elements
+///    results of the sum of the rows are
+///    placed. Must have space for `nrows`
+///    elements
 fn sum_image_rows(
   image_data: &[f32],
   nrows: u32,
@@ -50,7 +50,7 @@ fn sum_image_rows(
 ## Placing the Arguments-Section
 
 By default, the section documenting the arguments will go at the end
-of the top-level function documentation. But this crate allows to explicitly
+of the top-level function documentation. However, this crate allows to explicitly
 place the section by using a custom attribute like so:
 
 ```rust
@@ -70,13 +70,13 @@ fn foo(
 {}
 ```
 
-
 ## Considerations
 
 It's a [long standing issue](https://github.com/rust-lang/rust/issues/57525)
 whether and how to add this capability to `rustdoc`. Firstly, there's no
-general consensus on how exactly to do this, but I have seen the way that this
-crate does it a lot. Secondly, the standard library [doesn't need this](https://github.com/rust-lang/rust/issues/57525#issuecomment-453633783)
+general consensus on how exactly to document function parameters. However, 
+I have seen the way that this crate does it used a lot (with minor variations).
+Secondly, the standard library [doesn't need this](https://github.com/rust-lang/rust/issues/57525#issuecomment-453633783)
 style of documentation at all. So before you stick this macro on every function,
 consider:
 
@@ -96,4 +96,4 @@ this is a giant issue here for two reasons: firstly, this macro is to be used _s
 Secondly, this macro just does some light parsing and shuffling around of the documentation tokens.
 It introduces no additional tokens that aren't documentation. So it doesn't make
 your actual code more or less complex and thus should not do that much to your
-compile times, but I haven't measured.
+compile times, but I haven't measured it... so take it with a grain of sodium-chloride.
