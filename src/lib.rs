@@ -1,9 +1,11 @@
+#![doc= include_str!("../Readme.md")]
 use quote::{quote, ToTokens};
 use syn::{parse_macro_input, Attribute, FnArg, Ident, ItemFn, Pat};
 use util::{extract_doc_attrs, extract_fn_doc_attrs, prepend_to_doc_attribute};
 mod util;
 
 #[proc_macro_attribute]
+/// the principal attribute inside this crate that lets us document function arguments
 pub fn doxidize(
     _attr: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
@@ -83,7 +85,7 @@ pub fn doxidize(
     quote! {
         #(#docs_before)*
         #[doc=""]
-        #[doc=" # Arguments"]
+        #[doc="**Arguments**: "]
         #[doc=""]
         #(#parameter_doc_blocks)*
         #maybe_empty_doc_line
@@ -97,6 +99,8 @@ pub fn doxidize(
 // The only logic about this attribute that this here function includes is
 // to make sure that this attribute is not placed before the #[doxidize]
 // attribute. All other logic is handled in the doxidize macro itself.
+/// a helper attribute that dictates the placement of the section documenting
+/// the function arguments
 #[proc_macro_attribute]
 pub fn arguments_section(
     _attr: proc_macro::TokenStream,
