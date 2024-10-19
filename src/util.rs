@@ -94,7 +94,7 @@ pub fn extract_fn_doc_attrs(attrs: &mut Vec<Attribute>) -> Result<FunctionDocs, 
     }
 
     // delete all doc attributes from the function (and the arguments section attributes that I don't need anymore)
-    attrs.retain(|attr| !attr.path().is_ident("doc") && !is_arguments_section(attr));
+    attrs.retain(|attr| !attr.path().is_ident("doc"));
     Ok(FunctionDocs {
         before_args_section,
         after_args_section,
