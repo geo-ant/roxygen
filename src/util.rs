@@ -84,7 +84,7 @@ pub fn extract_fn_doc_attrs(attrs: &mut Vec<Attribute>) -> Result<FunctionDocs, 
         if is_arguments_section(current_attr) {
             return Err(syn::Error::new_spanned(
                 current_attr,
-                "This attribute must only occur once",
+                "Duplicate attribute not allowed.",
             ));
         }
         if current_attr.path().is_ident("doc") {

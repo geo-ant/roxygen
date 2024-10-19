@@ -1,0 +1,5 @@
+error: Duplicate attribute not allowed.
+ --> tests/fail/duplicate_arguments_section.rs:9:1
+  |
+9 | #[arguments_section]
+  | ^^^^^^^^^^^^^^^^^^^^
