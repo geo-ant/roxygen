@@ -9,7 +9,8 @@ proc-macro = true
 [dependencies]
 quote = "1"
 proc-macro2 = "1.0"
-syn = {version="2.0",features=["parsing","full","extra-traits"]}
+syn = {version="2.0",features=["parsing","full"]}
 
 [dev-dependencies]
 trybuild = "1.0"
+macrotest = "1.0"
