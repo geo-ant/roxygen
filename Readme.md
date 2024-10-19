@@ -53,6 +53,23 @@ By default, the section documenting the arguments will go at the end
 of the top-level function documentation. But this crate allows to explicitly
 place the section by using a custom attribute like so:
 
+```rust
+use doxidize::*;
+
+#[doxidize]
+/// long documention
+/// ...
+#[arguments_section]
+/// # Examples
+/// ...
+fn foo(
+  /// some docs
+  first: i32,
+  second: f32
+  )
+{}
+```
+
 
 ## Considerations
 

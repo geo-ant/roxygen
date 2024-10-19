@@ -17,10 +17,6 @@ pub fn doxidize(
     let mut parameter_docs =
         Vec::<(&Ident, Vec<Attribute>)>::with_capacity(function.sig.inputs.len());
 
-    for attr in function.attrs.iter() {
-        println!("attr: {:?}", attr.path());
-    }
-
     // extrac the doc attributes on the function itself
     let function_docs = match extract_fn_doc_attrs(&mut function.attrs) {
         Ok(docs) => docs,
