@@ -108,7 +108,7 @@ pub fn arguments_section(
     // cannot see the doxidize attribute
     let maybe_doxidize = function.attrs.iter().find(|attr| is_doxidize_main(attr));
     if let Some(attr) = maybe_doxidize {
-        syn::Error::new_spanned(&attr,"The #[doxidize] attribute must come before the arguments section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
+        syn::Error::new_spanned(attr,"The #[doxidize] attribute must come before the arguments section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
     } else {
         function.to_token_stream().into()
     }

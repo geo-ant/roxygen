@@ -1,5 +1,11 @@
 # Doxidize - Documenting Function Parameters
 
+![build](https://github.com/geo-ant/doxidize/actions/workflows/build.yml/badge.svg?branch=main)
+![tests](https://github.com/geo-ant/doxidize/actions/workflows/tests.yml/badge.svg?branch=main)
+![lints](https://github.com/geo-ant/doxidize/actions/workflows/lints.yml/badge.svg?branch=main)
+[![crates](https://img.shields.io/crates/v/doxidize)](https://crates.io/crates/doxidize)
+![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-brightgreen.svg)
+
 The `#[doxidize]` attribute allows you to add doc-comments to function
 parameters, which is a _compile error_ in current Rust. You can now write
 
