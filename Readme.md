@@ -37,6 +37,7 @@ like so:
 /// sum the rows of an image
 ///
 /// **Arguments**: 
+///
 /// * `image_data`: the image data in row-major format
 /// * `nrows`: the number of rows in the image
 /// * `ncols`: the number of columns in the image
@@ -81,25 +82,25 @@ fn foo(
 It's a [long standing issue](https://github.com/rust-lang/rust/issues/57525)
 whether and how to add this capability to `rustdoc`. Firstly, there's no
 general consensus on how exactly to document function parameters. However, 
-I have seen the way that this crate does it used a lot (with minor variations).
+I've seen the presented style used a lot, with minor variations.
 Secondly, the standard library [doesn't need this](https://github.com/rust-lang/rust/issues/57525#issuecomment-453633783)
 style of documentation at all. So before you stick this macro on every function,
-consider:
+do consider
 
 * taking inspiration from how the standard library deals with function parameters,
-* use fewer function parameters,
-* use more descriptive parameters names,
-* use _types_ to communicate intent,
-* stick parameters in a `struct`.
+* using fewer function parameters,
+* using more descriptive parameters names,
+* using _types_ to communicate intent,
+* sticking function parameters in a `struct`.
 
 All that being said, I've realized that sometimes I still want to document
 function parameters.
 
 ### Compile Times
 
-Macros will always increase your compile times to some degree, but I don't think
+Macros will always increase your compile time to some degree, but I don't think
 this is a giant issue here for two reasons: firstly, this macro is to be used _sparingly_.
-Secondly, this macro just does some light parsing and shuffling around of the documentation tokens.
-It introduces no additional tokens that aren't documentation. So it doesn't make
-your actual code more or less complex and thus should not do that much to your
-compile times, but I haven't measured it... so take it with a grain of sodium-chloride.
+Secondly, this macro just does some light parsing and shuffling around of
+the documentation tokens. It introduces no additional code. Thus, it doesn't
+make your actual code more or less complex and should not affect compile
+times much, but I haven't measured it... so take it with a grain of sodium-chloride.
