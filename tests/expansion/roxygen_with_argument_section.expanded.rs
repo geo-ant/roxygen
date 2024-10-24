@@ -2,7 +2,7 @@ use roxygen::*;
 /// this is documentation
 /// and this is too
 ///
-///**Arguments**:
+/// **Arguments**:
 ///
 /// * `bar`: this has one line of docs
 /// * `baz`: this has

@@ -98,7 +98,7 @@ pub fn roxygen(
     quote! {
         #(#docs_before)*
         #[doc=""]
-        #[doc="**Arguments**: "]
+        #[doc=" **Arguments**: "]
         #[doc=""]
         #(#parameter_doc_blocks)*
         #maybe_empty_doc_line
