@@ -1,6 +1,6 @@
-error: The #[doxidize] attribute must come before the arguments section attribute.
+error: The #[roxygen] attribute must come before the arguments section attribute.
        Place it before any of the doc comments for the function.
  --> tests/fail/wrong_arguments_section_placement.rs:7:1
   |
-7 | #[doxidize]
-  | ^^^^^^^^^^^
+7 | #[roxygen]
+  | ^^^^^^^^^^

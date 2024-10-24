@@ -1,4 +1,4 @@
-use doxidize::*;
+use roxygen::*;
 /// this is documentation
 /// and this is too
 ///
