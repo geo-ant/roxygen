@@ -1,4 +1,4 @@
-# roxygen - Documenting Function Parameters
+# roxygen - documenting function parameters
 
 ![build](https://github.com/geo-ant/roxygen/actions/workflows/build.yml/badge.svg?branch=main)
 ![tests](https://github.com/geo-ant/roxygen/actions/workflows/tests.yml/badge.svg?branch=main)
@@ -21,10 +21,9 @@ fn sum_image_rows(
   nrows: u32,
   /// the number of columns in the image
   ncols: u32,
-  /// an out buffer into which the
-  /// results of the sum of the rows are
-  /// placed. Must have space for `nrows`
-  /// elements
+  /// an out buffer into which the resulting
+  /// sums are placed. Must have space 
+  /// for `nrows * ncols` elements
   sums: &mut [f32]) -> Result<(),String> {
     todo!()
 } 
@@ -41,10 +40,9 @@ like so:
 /// * `image_data`: the image data in row-major format
 /// * `nrows`: the number of rows in the image
 /// * `ncols`: the number of columns in the image
-/// * `sums`:  an out buffer into which the
-///    results of the sum of the rows are
-///    placed. Must have space for `nrows`
-///    elements
+/// * `sums`: an out buffer into which the resulting
+///    sums are placed. Must have space 
+///    for `nrows * ncols` elements
 fn sum_image_rows(
   image_data: &[f32],
   nrows: u32,
