@@ -4,6 +4,16 @@ use syn::{parse_macro_input, Attribute, FnArg, Ident, ItemFn, Pat};
 use util::{extract_doc_attrs, extract_fn_doc_attrs, prepend_to_doc_attribute};
 mod util;
 
+// helper macro "try" on a syn::Error, so that we can return it as a token stream
+macro_rules! try2 {
+    ($ex:expr) => {
+        match $ex {
+            Ok(val) => val,
+            Err(err) => return err.into_compile_error().into(),
+        }
+    };
+}
+
 #[proc_macro_attribute]
 /// the principal attribute inside this crate that lets us document function arguments
 pub fn roxygen(
@@ -12,18 +22,25 @@ pub fn roxygen(
 ) -> proc_macro::TokenStream {
     let mut function: ItemFn = parse_macro_input!(item as ItemFn);
 
+    try2!(function.attrs.iter_mut().try_for_each(|attr| {
+        if is_roxygen_main(attr) {
+            Err(syn::Error::new_spanned(
+                attr,
+                "Duplicate attribute. This attribute must only appear once.",
+            ))
+        } else {
+            Ok(())
+        }
+    }));
+
     // will contain the docs comments for each documented function parameter
     // together with the identifier of the function parameter.
     let mut parameter_docs =
         Vec::<(&Ident, Vec<Attribute>)>::with_capacity(function.sig.inputs.len());
 
     // extrac the doc attributes on the function itself
-    let function_docs = match extract_fn_doc_attrs(&mut function.attrs) {
-        Ok(docs) => docs,
-        Err(err) => {
-            return err.into_compile_error().into();
-        }
-    };
+    let function_docs = try2!(extract_fn_doc_attrs(&mut function.attrs));
+
     // extract the doc attributes on the parameters
     for arg in function.sig.inputs.iter_mut() {
         match arg {

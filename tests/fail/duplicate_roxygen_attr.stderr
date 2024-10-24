@@ -1,0 +1,5 @@
+error: Duplicate attribute. This attribute must only appear once.
+ --> tests/fail/duplicate_roxygen_attr.rs:5:1
+  |
+5 | #[roxygen]
+  | ^^^^^^^^^^
