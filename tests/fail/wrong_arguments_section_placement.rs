@@ -1,10 +1,10 @@
-use doxidize::*;
+use roxygen::*;
 
 /// here are some comments
 /// this arguments section should not be here
 #[arguments_section]
 /// and some more
-#[doxidize]
+#[roxygen]
 pub fn add(
     /// some comments
     first: i32,

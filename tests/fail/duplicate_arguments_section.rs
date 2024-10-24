@@ -1,6 +1,6 @@
-use doxidize::*;
+use roxygen::*;
 
-#[doxidize]
+#[roxygen]
 /// here are some comments
 /// and some more
 #[arguments_section]

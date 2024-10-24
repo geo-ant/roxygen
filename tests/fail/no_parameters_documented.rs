@@ -1,6 +1,6 @@
-use doxidize::*;
+use roxygen::*;
 
-#[doxidize]
+#[roxygen]
 /// no function parameters documented
 /// and some more
 pub fn add(first: i32, second: i32) -> i32 {

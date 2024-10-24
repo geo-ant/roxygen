@@ -6,7 +6,7 @@ mod util;
 
 #[proc_macro_attribute]
 /// the principal attribute inside this crate that lets us document function arguments
-pub fn doxidize(
+pub fn roxygen(
     _attr: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
@@ -93,8 +93,8 @@ pub fn doxidize(
 
 // this is to expose the helper attribute #[arguments_section].
 // The only logic about this attribute that this here function includes is
-// to make sure that this attribute is not placed before the #[doxidize]
-// attribute. All other logic is handled in the doxidize macro itself.
+// to make sure that this attribute is not placed before the #[roxygen]
+// attribute. All other logic is handled in the roxygen macro itself.
 /// a helper attribute that dictates the placement of the section documenting
 /// the function arguments
 #[proc_macro_attribute]
@@ -104,11 +104,11 @@ pub fn arguments_section(
 ) -> proc_macro::TokenStream {
     let function: ItemFn = parse_macro_input!(item as ItemFn);
 
-    // enforce that this macro comes after doxidize, which means it
-    // cannot see the doxidize attribute
-    let maybe_doxidize = function.attrs.iter().find(|attr| is_doxidize_main(attr));
-    if let Some(attr) = maybe_doxidize {
-        syn::Error::new_spanned(attr,"The #[doxidize] attribute must come before the arguments section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
+    // enforce that this macro comes after roxygen, which means it
+    // cannot see the roxygen attribute
+    let maybe_roxygen = function.attrs.iter().find(|attr| is_roxygen_main(attr));
+    if let Some(attr) = maybe_roxygen {
+        syn::Error::new_spanned(attr,"The #[roxygen] attribute must come before the arguments section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
     } else {
         function.to_token_stream().into()
     }
@@ -121,9 +121,9 @@ fn is_arguments_section(attr: &Attribute) -> bool {
     attr.path().is_ident("arguments_section")
 }
 
-/// check whether an attribute is the raw #[doxidize] main attribute.
+/// check whether an attribute is the raw #[roxygen] main attribute.
 /// Stuck into this function, so I can refactor this logic
 #[inline(always)]
-fn is_doxidize_main(attr: &Attribute) -> bool {
-    attr.path().is_ident("doxidize")
+fn is_roxygen_main(attr: &Attribute) -> bool {
+    attr.path().is_ident("roxygen")
 }
