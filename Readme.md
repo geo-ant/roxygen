@@ -8,7 +8,7 @@
 
 The `#[roxygen]` attribute allows you to add doc-comments to function
 parameters, which is a _compile error_ in current Rust. Generic lifetimes,
-types and constants of the function can also be documented with it. 
+types and constants of the function [can also be documented](https://docs.rs/roxygen/latest/roxygen/). 
 You can now write
 
 ```rust
