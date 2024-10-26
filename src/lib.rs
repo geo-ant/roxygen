@@ -1,7 +1,34 @@
 #![doc= include_str!("../Readme.md")]
+//! ## Documenting Generics
+//! Generic parameters can be documented with doc comments just as the arguments
+//! can be:
+//! ```rust
+//! use roxygen::roxygen;
+//!
+//! #[roxygen]
+//! fn frobnicate<
+//! /// some comment goes here
+//! S,
+//! T> (
+//! /// the value being frobnicated
+//! frobnicator: T,
+//! /// the frobnicant
+//! frobnicant: S) -> T
+//! {
+//!    todo!()
+//! }
+//! ```
+//! This generates an additional section for the generic parameters right
+//! after the arguments section (if it exists).
+//! All types of generic arguments, including lifetimes and const-generics
+//! can be documented like this.
+//!
 use quote::{quote, ToTokens};
-use syn::{parse_macro_input, Attribute, FnArg, Ident, ItemFn, Pat};
-use util::{extract_doc_attrs, extract_fn_doc_attrs, prepend_to_doc_attribute};
+use syn::{parse_macro_input, Attribute, ItemFn};
+use util::{
+    extract_documented_generics, extract_documented_parameters, extract_fn_doc_attrs,
+    make_doc_block,
+};
 mod util;
 
 // helper macro "try" on a syn::Error, so that we can return it as a token stream
@@ -33,59 +60,29 @@ pub fn roxygen(
         }
     }));
 
-    // will contain the docs comments for each documented function parameter
-    // together with the identifier of the function parameter.
-    let mut parameter_docs =
-        Vec::<(&Ident, Vec<Attribute>)>::with_capacity(function.sig.inputs.len());
-
     // extrac the doc attributes on the function itself
     let function_docs = try2!(extract_fn_doc_attrs(&mut function.attrs));
 
-    // extract the doc attributes on the parameters
-    for arg in function.sig.inputs.iter_mut() {
-        match arg {
-            FnArg::Typed(pat_type) => {
-                let Pat::Ident(pat_ident) = pat_type.pat.as_ref() else {
-                    unreachable!("unexpected node while parsing");
-                };
-                let ident = &pat_ident.ident;
-                let docs = extract_doc_attrs(&mut pat_type.attrs);
+    let documented_params = try2!(extract_documented_parameters(
+        function.sig.inputs.iter_mut()
+    ));
 
-                if !docs.is_empty() {
-                    parameter_docs.push((ident, docs));
-                }
-            }
-            FnArg::Receiver(_) => {}
-        }
-    }
+    let documented_generics = try2!(extract_documented_generics(&mut function.sig.generics));
 
-    if parameter_docs.is_empty() {
+    let has_documented_params = !documented_params.is_empty();
+    let has_documented_generics = !documented_generics.is_empty();
+
+    if !has_documented_params && !has_documented_generics {
         return syn::Error::new_spanned(
             function.sig.ident,
-            "Function has no documented arguments.\nDocument at least one function argument.",
+            "Function has no documented parameters or generics.\nDocument at least one function parameter or generic.",
         )
         .into_compile_error()
         .into();
     }
 
-    let parameter_doc_blocks = parameter_docs.into_iter().map(|(ident, docs)| {
-        let mut docs_iter = docs.iter();
-        // we always have at least one doc attribute because otherwise we
-        // would not have inserted this pair into the parameter docs in the
-        // first place
-        let first = docs_iter
-            .next()
-            .expect("unexpectedly encountered empty doc list");
-
-        let first_line = prepend_to_doc_attribute(&format!(" * `{}`:", ident), first);
-
-        // we just need to indent the other lines, if they exist
-        let next_lines = docs_iter.map(|attr| prepend_to_doc_attribute("   ", attr));
-        quote! {
-            #first_line
-            #(#next_lines)*
-        }
-    });
+    let parameter_doc_block = make_doc_block("Arguments", documented_params);
+    let generics_doc_block = make_doc_block("Generics", documented_generics);
 
     let docs_before = function_docs.before_args_section;
     let docs_after = function_docs.after_args_section;
@@ -97,10 +94,8 @@ pub fn roxygen(
 
     quote! {
         #(#docs_before)*
-        #[doc=""]
-        #[doc=" **Arguments**: "]
-        #[doc=""]
-        #(#parameter_doc_blocks)*
+        #parameter_doc_block
+        #generics_doc_block
         #maybe_empty_doc_line
         #(#docs_after)*
         #function
