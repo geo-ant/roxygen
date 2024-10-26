@@ -29,8 +29,9 @@ fn sum_image_rows(
 } 
 ```
 
-This will produce documentation as if you had written the doc-comment for the function
-like so:
+You have to document at least one parameter, but you don't have
+to document all of them. The example above will produce documentation as 
+if you had written a doc comment for the function like so:
 
 ```rust
 /// sum the rows of an image
