@@ -8,7 +8,7 @@
 
 The `#[roxygen]` attribute allows you to add doc-comments to function
 parameters, which is a _compile error_ in current Rust. Generic lifetimes,
-types and constants of the function [can also be documented](https://docs.rs/roxygen/latest/roxygen/). 
+types, and constants of the function [can also be documented](https://docs.rs/roxygen/latest/roxygen/). 
 You can now write
 
 ```rust
@@ -122,5 +122,5 @@ this is a giant issue here for two reasons: firstly, this macro is to be used _s
 Secondly, this macro just does some light parsing and shuffling around of
 the documentation tokens. It introduces no additional code. Thus, it doesn't
 make your actual code more or less complex and should not affect compile
-times much (that is after this crate was compiled once), but I haven't
+times much (after this crate was compiled once), but I haven't
 measured it... so take it with a grain of sodium-chloride.
