@@ -7,7 +7,9 @@
 ![maintenance-status](https://img.shields.io/badge/maintenance-actively--developed-brightgreen.svg)
 
 The `#[roxygen]` attribute allows you to add doc-comments to function
-parameters, which is a _compile error_ in current Rust. You can now write
+parameters, which is a _compile error_ in current Rust. Generic lifetimes,
+types and constants of the function can also be documented with it. 
+You can now write
 
 ```rust
 use roxygen::*;
@@ -29,7 +31,7 @@ fn sum_image_rows(
 } 
 ```
 
-You have to document at least one parameter, but you don't have
+You have to document at least one parameter (or generic), but you don't have
 to document all of them. The example above will produce documentation as 
 if you had written a doc comment for the function like so:
 

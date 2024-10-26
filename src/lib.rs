@@ -1,4 +1,28 @@
 #![doc= include_str!("../Readme.md")]
+//! ## Documenting Generics
+//! Generic parameters can be documented with doc comments just as the arguments
+//! can be:
+//! ```rust
+//! use roxygen::roxygen;
+//!
+//! #[roxygen]
+//! fn frobnicate<
+//! /// some comment goes here
+//! S,
+//! T> (
+//! /// the value being frobnicated
+//! frobnicator: T,
+//! /// the frobnicant
+//! frobnicant: S) -> T
+//! {
+//!    todo!()
+//! }
+//! ```
+//! This generates an additional section for the generic parameters right
+//! after the arguments section (if it exists).
+//! All types of generic arguments, including lifetimes and const-generics
+//! can be documented like this.
+//!
 use quote::{quote, ToTokens};
 use syn::{parse_macro_input, Attribute, ItemFn};
 use util::{

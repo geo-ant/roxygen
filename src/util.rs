@@ -150,9 +150,9 @@ where
 }
 
 /// same as extracting documentatio from parameters, but for generic types
-pub fn extract_documented_generics<'a>(
-    generics: &'a mut Generics,
-) -> Result<Vec<DocumentedIdent<'a>>, syn::Error> {
+pub fn extract_documented_generics(
+    generics: &'_ mut Generics,
+) -> Result<Vec<DocumentedIdent<'_>>, syn::Error> {
     let mut documented_generics = Vec::with_capacity(generics.params.len());
     for param in generics.params.iter_mut() {
         let (ident, attrs) = match param {
@@ -175,10 +175,11 @@ pub fn extract_documented_generics<'a>(
 /// * `ident`: doc-comments
 /// * `ident2`: doc-comments
 /// * ...
-/// or an empty token stream if the list of idents is empty
-pub fn make_doc_block<'a, S>(
+///
+/// returns an empty token stream if the list of idents is empty
+pub fn make_doc_block<S>(
     caption: S,
-    documented_idents: Vec<DocumentedIdent<'a>>,
+    documented_idents: Vec<DocumentedIdent<'_>>,
 ) -> Option<TokenStream>
 where
     S: AsRef<str>,
