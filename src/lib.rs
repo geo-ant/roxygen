@@ -1,7 +1,7 @@
 #![doc= include_str!("../Readme.md")]
 use quote::{quote, ToTokens};
-use syn::{parse_macro_input, Attribute, FnArg, Ident, ItemFn, Pat};
-use util::{extract_doc_attrs, extract_fn_doc_attrs, prepend_to_doc_attribute};
+use syn::{parse_macro_input, Attribute, ItemFn};
+use util::{extract_documented_parameters, extract_fn_doc_attrs, prepend_to_doc_attribute};
 mod util;
 
 // helper macro "try" on a syn::Error, so that we can return it as a token stream
@@ -33,33 +33,16 @@ pub fn roxygen(
         }
     }));
 
-    // will contain the docs comments for each documented function parameter
-    // together with the identifier of the function parameter.
-    let mut parameter_docs =
-        Vec::<(&Ident, Vec<Attribute>)>::with_capacity(function.sig.inputs.len());
-
     // extrac the doc attributes on the function itself
     let function_docs = try2!(extract_fn_doc_attrs(&mut function.attrs));
 
-    // extract the doc attributes on the parameters
-    for arg in function.sig.inputs.iter_mut() {
-        match arg {
-            FnArg::Typed(pat_type) => {
-                let Pat::Ident(pat_ident) = pat_type.pat.as_ref() else {
-                    unreachable!("unexpected node while parsing");
-                };
-                let ident = &pat_ident.ident;
-                let docs = extract_doc_attrs(&mut pat_type.attrs);
+    // will contain the docs comments for each documented function parameter
+    // together with the identifier of the function parameter.
+    let documented_params = try2!(extract_documented_parameters(
+        function.sig.inputs.iter_mut()
+    ));
 
-                if !docs.is_empty() {
-                    parameter_docs.push((ident, docs));
-                }
-            }
-            FnArg::Receiver(_) => {}
-        }
-    }
-
-    if parameter_docs.is_empty() {
+    if documented_params.is_empty() {
         return syn::Error::new_spanned(
             function.sig.ident,
             "Function has no documented arguments.\nDocument at least one function argument.",
@@ -68,8 +51,8 @@ pub fn roxygen(
         .into();
     }
 
-    let parameter_doc_blocks = parameter_docs.into_iter().map(|(ident, docs)| {
-        let mut docs_iter = docs.iter();
+    let parameter_doc_blocks = documented_params.into_iter().map(|param| {
+        let mut docs_iter = param.docs.iter();
         // we always have at least one doc attribute because otherwise we
         // would not have inserted this pair into the parameter docs in the
         // first place
@@ -77,7 +60,7 @@ pub fn roxygen(
             .next()
             .expect("unexpectedly encountered empty doc list");
 
-        let first_line = prepend_to_doc_attribute(&format!(" * `{}`:", ident), first);
+        let first_line = prepend_to_doc_attribute(&format!(" * `{}`:", param.ident), first);
 
         // we just need to indent the other lines, if they exist
         let next_lines = docs_iter.map(|attr| prepend_to_doc_attribute("   ", attr));
