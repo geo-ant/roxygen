@@ -1,7 +1,10 @@
 #![doc= include_str!("../Readme.md")]
 use quote::{quote, ToTokens};
 use syn::{parse_macro_input, Attribute, ItemFn};
-use util::{extract_documented_parameters, extract_fn_doc_attrs, prepend_to_doc_attribute};
+use util::{
+    extract_documented_generics, extract_documented_parameters, extract_fn_doc_attrs,
+    make_doc_block,
+};
 mod util;
 
 // helper macro "try" on a syn::Error, so that we can return it as a token stream
@@ -36,39 +39,26 @@ pub fn roxygen(
     // extrac the doc attributes on the function itself
     let function_docs = try2!(extract_fn_doc_attrs(&mut function.attrs));
 
-    // will contain the docs comments for each documented function parameter
-    // together with the identifier of the function parameter.
     let documented_params = try2!(extract_documented_parameters(
         function.sig.inputs.iter_mut()
     ));
 
-    if documented_params.is_empty() {
+    let documented_generics = try2!(extract_documented_generics(&mut function.sig.generics));
+
+    let has_documented_params = !documented_params.is_empty();
+    let has_documented_generics = !documented_generics.is_empty();
+
+    if !has_documented_params && !has_documented_generics {
         return syn::Error::new_spanned(
             function.sig.ident,
-            "Function has no documented arguments.\nDocument at least one function argument.",
+            "Function has no documented parameters or generics.\nDocument at least one function parameter or generic.",
         )
         .into_compile_error()
         .into();
     }
 
-    let parameter_doc_blocks = documented_params.into_iter().map(|param| {
-        let mut docs_iter = param.docs.iter();
-        // we always have at least one doc attribute because otherwise we
-        // would not have inserted this pair into the parameter docs in the
-        // first place
-        let first = docs_iter
-            .next()
-            .expect("unexpectedly encountered empty doc list");
-
-        let first_line = prepend_to_doc_attribute(&format!(" * `{}`:", param.ident), first);
-
-        // we just need to indent the other lines, if they exist
-        let next_lines = docs_iter.map(|attr| prepend_to_doc_attribute("   ", attr));
-        quote! {
-            #first_line
-            #(#next_lines)*
-        }
-    });
+    let parameter_doc_block = make_doc_block("Arguments", documented_params);
+    let generics_doc_block = make_doc_block("Generics", documented_generics);
 
     let docs_before = function_docs.before_args_section;
     let docs_after = function_docs.after_args_section;
@@ -80,10 +70,8 @@ pub fn roxygen(
 
     quote! {
         #(#docs_before)*
-        #[doc=""]
-        #[doc=" **Arguments**: "]
-        #[doc=""]
-        #(#parameter_doc_blocks)*
+        #parameter_doc_block
+        #generics_doc_block
         #maybe_empty_doc_line
         #(#docs_after)*
         #function

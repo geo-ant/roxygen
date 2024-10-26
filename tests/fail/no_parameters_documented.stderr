@@ -1,5 +1,5 @@
-error: Function has no documented arguments.
-       Document at least one function argument.
+error: Function has no documented parameters or generics.
+       Document at least one function parameter or generic.
  --> tests/fail/no_parameters_documented.rs:6:8
   |
 6 | pub fn add(first: i32, second: i32) -> i32 {
