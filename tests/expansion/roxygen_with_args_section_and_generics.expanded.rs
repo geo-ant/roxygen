@@ -10,10 +10,12 @@ use roxygen::*;
 ///
 /// **Generics**:
 ///
+/// * `a`: a lifetime
 /// * `T`: documentation for parameter T
 ///    spans multiple lines
+/// * `N`: a const generic
 ///
 /// this goes after the arguments section
-fn foo<S, T>(bar: u32, baz: String, _undocumented: i32) -> bool {
+fn foo<'a, S, T, const N: usize>(bar: u32, baz: String, _undocumented: i32) -> bool {
     baz.len() > bar as usize
 }

@@ -6,10 +6,14 @@ use roxygen::*;
 #[arguments_section]
 /// this goes after the arguments section
 fn foo<
+    /// a lifetime
+    'a,
     S,
     /// documentation for parameter T
     /// spans multiple lines
     T,
+    /// a const generic
+    const N: usize,
 >(
     /// this has one line of docs
     bar: u32,
