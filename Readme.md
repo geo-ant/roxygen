@@ -23,14 +23,15 @@ fn sum_image_rows(
   ncols: u32,
   /// an out buffer into which the resulting
   /// sums are placed. Must have space 
-  /// for `nrows * ncols` elements
+  /// for exactly `nrows` elements
   sums: &mut [f32]) -> Result<(),String> {
     todo!()
 } 
 ```
 
-This will produce documentation as if you had written the doc-comment for the function
-like so:
+You have to document at least one parameter, but you don't have
+to document all of them. The example above will produce documentation as 
+if you had written a doc comment for the function like so:
 
 ```rust
 /// sum the rows of an image
@@ -42,7 +43,7 @@ like so:
 /// * `ncols`: the number of columns in the image
 /// * `sums`: an out buffer into which the resulting
 ///    sums are placed. Must have space 
-///    for `nrows * ncols` elements
+///    for exactly `nrows` elements
 fn sum_image_rows(
   image_data: &[f32],
   nrows: u32,
@@ -91,6 +92,24 @@ do consider
 * using _types_ to communicate intent,
 * sticking function parameters in a `struct`.
 
+Here is [an elegant way](https://www.reddit.com/r/rust/comments/1gb782e/comment/ltpk16x/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button),
+how the example above can be reworked without using per parameter documentation:
+
+```rust
+/// Sums the rows of an image.
+///
+/// The rows of `image_data`, an `nrows` by `ncols`
+/// matrix in row-major ordering, are summed into `sums`
+/// which must have exactly `nrows` elements.
+fn sum_image_rows(
+  image_data: &[f32],
+  nrows: u32,
+  ncols: u32,
+  sums: &mut [f32]) -> Result<(),String> {
+    todo!()
+}
+```
+
 All that being said, I've realized that sometimes I still want to document
 function parameters.
 
@@ -101,4 +120,5 @@ this is a giant issue here for two reasons: firstly, this macro is to be used _s
 Secondly, this macro just does some light parsing and shuffling around of
 the documentation tokens. It introduces no additional code. Thus, it doesn't
 make your actual code more or less complex and should not affect compile
-times much, but I haven't measured it... so take it with a grain of sodium-chloride.
+times much (that is after this crate was compiled once), but I haven't
+measured it... so take it with a grain of sodium-chloride.
