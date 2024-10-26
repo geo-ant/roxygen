@@ -99,7 +99,7 @@ how the example above can be reworked without using per parameter documentation:
 ///
 /// The rows of `image_data`, an `nrows` by `ncols`
 /// matrix in row-major ordering, are summed into `sums`
-/// which must have space for exactly `nrows` elements.
+/// which must have exactly `nrows` elements.
 fn sum_image_rows(
   image_data: &[f32],
   nrows: u32,
