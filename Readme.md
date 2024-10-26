@@ -23,7 +23,7 @@ fn sum_image_rows(
   ncols: u32,
   /// an out buffer into which the resulting
   /// sums are placed. Must have space 
-  /// for `nrows` elements
+  /// for exactly `nrows` elements
   sums: &mut [f32]) -> Result<(),String> {
     todo!()
 } 
@@ -42,7 +42,7 @@ like so:
 /// * `ncols`: the number of columns in the image
 /// * `sums`: an out buffer into which the resulting
 ///    sums are placed. Must have space 
-///    for `nrows * ncols` elements
+///    for exactly `nrows` elements
 fn sum_image_rows(
   image_data: &[f32],
   nrows: u32,
