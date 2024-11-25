@@ -54,9 +54,9 @@ fn sum_image_rows(
 }
 ```
 
-## Placing the Arguments-Section
+## Placing the Parameters-Section
 
-By default, the section documenting the arguments will go at the end
+By default, the section documenting the parameters will go at the end
 of the top-level function documentation. However, this crate allows to explicitly
 place the section by using a custom attribute like so:
 
