@@ -10,6 +10,8 @@ description = "Seamlessly document function parameters with rustdoc"
 readme = "Readme.md"
 categories = ["rust-patterns","development-tools"]
 keywords = ["document", "function", "parameters", "arguments", "doxygen"]
+
+[badges]
 maintenance = { status = "passively-maintained" }
 
 [lib]
