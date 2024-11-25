@@ -20,25 +20,3 @@ fn foo(
 fn test_foo() {
     assert_eq!(foo(1, 3.), -2.);
 }
-
-//@todo(geo) remove this when arguments section is removed
-// just a smoke test that the proc macro can indeed be used like this.
-// the real tests are in the macro expansion tests.
-#[roxygen]
-/// hello
-#[arguments_section]
-///      this
-///          is doc
-fn foo2(
-    /// some comments
-    /// more comments
-    first: i32,
-    second: f32,
-) -> f32 {
-    first as f32 - second
-}
-
-#[test]
-fn test_foo2() {
-    assert_eq!(foo2(1, 3.), -2.);
-}

@@ -3,7 +3,7 @@ use roxygen::*;
 #[roxygen]
 /// this is documentation
 /// and this is too
-#[arguments_section]
+#[parameters_section]
 /// this goes after the arguments section
 fn foo<
     /// a lifetime

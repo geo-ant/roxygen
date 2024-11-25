@@ -2,7 +2,7 @@ use roxygen::*;
 
 /// here are some comments
 /// this arguments section should not be here
-#[arguments_section]
+#[parameters_section]
 /// and some more
 #[roxygen]
 pub fn add(
