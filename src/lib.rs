@@ -22,7 +22,6 @@
 //! after the arguments section (if it exists).
 //! All types of generic arguments, including lifetimes and const-generics
 //! can be documented like this.
-//!
 use quote::{quote, ToTokens};
 use syn::{parse_macro_input, Attribute, ItemFn};
 use util::{
@@ -110,6 +109,33 @@ pub fn roxygen(
 /// a helper attribute that dictates the placement of the section documenting
 /// the function arguments
 #[proc_macro_attribute]
+pub fn parameters_section(
+    _attr: proc_macro::TokenStream,
+    item: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
+    let function: ItemFn = parse_macro_input!(item as ItemFn);
+
+    // enforce that this macro comes after roxygen, which means it
+    // cannot see the roxygen attribute
+    let maybe_roxygen = function.attrs.iter().find(|attr| is_roxygen_main(attr));
+    if let Some(attr) = maybe_roxygen {
+        syn::Error::new_spanned(attr,"The #[roxygen] attribute must come before the arguments section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
+    } else {
+        function.to_token_stream().into()
+    }
+}
+
+//
+//@todo(geo) when I remove this, also change the `is_parameter_section` function
+//
+// this is to expose the helper attribute #[arguments_section].
+// The only logic about this attribute that this here function includes is
+// to make sure that this attribute is not placed before the #[roxygen]
+// attribute. All other logic is handled in the roxygen macro itself.
+/// a helper attribute that dictates the placement of the section documenting
+/// the function arguments
+#[proc_macro_attribute]
+#[deprecated = "use parameter_section instead"]
 pub fn arguments_section(
     _attr: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
@@ -129,8 +155,8 @@ pub fn arguments_section(
 /// check whether an attribute is the arguments section attribute.
 /// Stick this into it's own function so I can change the logic
 #[inline(always)]
-fn is_arguments_section(attr: &Attribute) -> bool {
-    attr.path().is_ident("arguments_section")
+fn is_parameters_section(attr: &Attribute) -> bool {
+    attr.path().is_ident("arguments_section") || attr.path().is_ident("parameters_section")
 }
 
 /// check whether an attribute is the raw #[roxygen] main attribute.

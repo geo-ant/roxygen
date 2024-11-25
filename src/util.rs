@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{Attribute, Expr, FnArg, Generics, Ident, LitStr, Meta, MetaNameValue, Pat};
 
-use crate::is_arguments_section;
+use crate::is_parameters_section;
 
 /// Function to prepend a string to a `#[doc]` attribute.
 pub fn prepend_to_doc_attribute(prepend_text: &str, attr: &Attribute) -> proc_macro2::TokenStream {
@@ -72,7 +72,7 @@ pub fn extract_fn_doc_attrs(attrs: &mut Vec<Attribute>) -> Result<FunctionDocs, 
     // parse the arguments before the arguments-section attribute
     while idx < attrs.len() {
         let current_attr = attrs.get(idx).unwrap();
-        if is_arguments_section(current_attr) {
+        if is_parameters_section(current_attr) {
             idx += 1;
             break;
         }
@@ -84,7 +84,7 @@ pub fn extract_fn_doc_attrs(attrs: &mut Vec<Attribute>) -> Result<FunctionDocs, 
 
     while idx < attrs.len() {
         let current_attr = attrs.get(idx).unwrap();
-        if is_arguments_section(current_attr) {
+        if is_parameters_section(current_attr) {
             return Err(syn::Error::new_spanned(
                 current_attr,
                 "Duplicate attribute not allowed.",

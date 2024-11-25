@@ -4,10 +4,10 @@ use roxygen::*;
 /// here are some comments
 #[roxygen]
 /// and some more
-#[arguments_section]
+#[parameters_section]
 /// and some more
 /// but this next argument section should not be here
-#[arguments_section]
+#[parameters_section]
 pub fn add(
     /// some comments
     first: i32,

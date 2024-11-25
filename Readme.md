@@ -62,12 +62,12 @@ of the top-level function documentation. However, this crate allows to explicitl
 place the section by using a custom attribute like so:
 
 ```rust
-use roxygen::*;
+use roxygen::roxygen;
 
 #[roxygen]
 /// long documention
 /// ...
-#[arguments_section]
+#[roxygen::parameters_section]
 /// # Examples
 /// ...
 fn foo(
