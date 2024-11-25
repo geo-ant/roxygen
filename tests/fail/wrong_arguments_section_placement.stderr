@@ -4,3 +4,11 @@ error: The #[roxygen] attribute must come before the arguments section attribute
   |
 7 | #[roxygen]
   | ^^^^^^^^^^
+
+warning: use of deprecated macro `arguments_section`: use parameter_section instead
+ --> tests/fail/wrong_arguments_section_placement.rs:5:3
+  |
+5 | #[arguments_section]
+  |   ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(deprecated)]` on by default
