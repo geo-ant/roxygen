@@ -37,7 +37,7 @@ if you had written a doc comment for the function like so:
 ```rust
 /// sum the rows of an image
 ///
-/// **Arguments**: 
+/// **Parameters**: 
 ///
 /// * `image_data`: the image data in row-major format
 /// * `nrows`: the number of rows in the image
