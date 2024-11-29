@@ -149,6 +149,88 @@ where
     Ok(documented_params)
 }
 
+use syn::ExprLit;
+use syn::Lit;
+use itertools::{Itertools, Position as IPos};
+
+/// Same as extract_documented_parameters, but shifts all docs by -1, returning the 1st parameter's docs separately,
+/// so that it can be used as a function comment
+/// Also allows splitting the last parameter's docs into 2: belonging to the last parameter (after ///!) and to the previous one
+///
+/// fn sum_image_rows( /// this comment belongs to the function, not to the next parameter, so will be returned separately
+///  image_data : &[f32],/// this comment belongs to the preceding `image_data` parameter, not `nrows`
+///  nrows      :   u32 ,/// this part of the comment belongs to `nrows`
+///                             ///! but this part — to the last `ncols` parameter
+///  ncols      :   u32 ,// it's a syntax error to add doc comments at the end
+/// )
+pub fn extract_documented_parameters_shift_up<'a, I>(args: I) -> Result<(Option<Vec<Attribute>>,Vec<DocumentedIdent<'a>>), syn::Error>
+where
+    I: Iterator<Item = &'a mut FnArg>,
+{
+    // will contain the docs comments for each documented function parameter
+    // together with the identifier of the function parameter.
+    let (lower, upper) = args.size_hint();
+    let mut documented_params = Vec::<DocumentedIdent>::with_capacity(upper.unwrap_or(lower));
+
+    let mut docs0     :Option<Vec::<Attribute>> = None;
+    let mut ident_prev:Option<&Ident> = None;
+    let mut ident_last:Option<&Ident> = None;
+    let mut docs_last :Vec::<Attribute> = vec![];
+    for (pos,arg) in args.with_position() {
+        match arg {
+            FnArg::Typed(pat_type) => {
+                let Pat::Ident(pat_ident) = pat_type.pat.as_ref() else {unreachable!("unexpected node while parsing");};
+                let ident = &pat_ident.ident;
+                let docs = extract_doc_attrs(&mut pat_type.attrs);
+
+                if !docs.is_empty() {
+                    match pos {
+                        IPos::Only   => {ident_last = Some(ident); docs_last =      docs;},
+                        IPos::First  => {ident_prev = Some(ident); docs0     = Some(docs);},
+                        IPos::Middle => {documented_params.push(DocumentedIdent::new(ident_prev.take().expect("preserved prev ident"), docs));
+                                         ident_prev = Some(ident);},
+                        IPos::Last   => {documented_params.push(DocumentedIdent::new(ident_prev.take().expect("preserved prev ident"), docs.clone()));
+                                         ident_last = Some(ident); docs_last =      docs},
+                    }
+                }
+            }
+            FnArg::Receiver(_) => {}
+        }
+    }
+    let mut is_split = false;
+    if let Some(ident_last) = ident_last { // on ///! split the docs between 2 parameters, removing !
+        let mut docs_last_2prev:Vec::<Attribute> = vec![];
+        let mut docs_last_2last:Vec::<Attribute> = vec![];
+        for mut attr in docs_last {
+            if let Meta::NameValue(MetaNameValue {value: Expr::Lit(ExprLit{lit: Lit::Str(ref mut lit_s),..}),..}) = attr.meta {
+                if ! is_split {
+                    let s = lit_s.value();
+                    if s.starts_with('!') {
+                        is_split = true;
+                        *lit_s = LitStr::new(&s[1..s.len()], lit_s.span());
+                        docs_last_2last.push(attr); // assign post ///! doc lines to the last parameter
+                    } else {
+                        docs_last_2prev.push(attr);
+                    }
+                } else { // everything post stplit goes to the last parameter, ignore further ///!
+                        docs_last_2last.push(attr);
+                }
+            }
+        }
+        if ! docs_last_2last.is_empty() {
+            if let Some(mut docum_par_prev) = documented_params.pop() {
+              docum_par_prev.docs = docs_last_2prev;
+              documented_params.push(docum_par_prev);
+              documented_params.push(DocumentedIdent::new(ident_last, docs_last_2last));
+            } else {
+                docs0 = Some(docs_last_2prev);
+                documented_params.push(DocumentedIdent::new(ident_last, docs_last_2last));
+            }
+        }
+    }
+    Ok((docs0,documented_params))
+}
+
 /// same as extracting documentatio from parameters, but for generic types
 pub fn extract_documented_generics(
     generics: &'_ mut Generics,
