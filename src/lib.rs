@@ -139,14 +139,11 @@ fn is_parameters_section(attr: &Attribute) -> bool {
 
     if path.is_ident(PARAM_SECTION) {
         true
-    } else if path.segments.len() == 2
-        && path.segments[0].ident == ROXYGEN_CRATE
-        && path.segments[1].ident == PARAM_SECTION
-    {
-        true
     } else {
-        // panic!("{}", path.to_token_stream().to_string());
-        false
+        // checks for (::)roxygen::param_section
+        path.segments.len() == 2
+            && path.segments[0].ident == ROXYGEN_CRATE
+            && path.segments[1].ident == PARAM_SECTION
     }
 }
 
