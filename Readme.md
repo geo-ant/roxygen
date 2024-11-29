@@ -55,6 +55,9 @@ fn sum_image_rows(
 }
 ```
 
+⚠️  **Renaming** the macros exported from this crate (`use ... as ...`) or renaming the
+crate itself (in your `Cargo.toml`) will make them stop working properly.
+
 ## Placing the Parameters-Section
 
 By default, the section documenting the parameters will go at the end
@@ -77,10 +80,6 @@ fn foo(
   )
 {}
 ```
-
-**Note**: if (for some reason) you want to rename the roxygen crate in your `Cargo.toml` file,
-please import the `#[parameters_section]` macro and use it as `#[parameters_section]`
-without the fully qualified path.
 
 ## Considerations
 
