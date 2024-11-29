@@ -31,6 +31,28 @@ fn sum_image_rows(
 } 
 ```
 
+The `#[argdocpos]` attribute allows you to add doc-comments to function
+parameters, but _after_ the parameters.
+You can now write
+
+```rust
+use roxygen::*;
+
+#[argdocpos]
+fn sum_image_rows_pos( /// sum the rows of an image
+  image_data: &    [f32], /// the image data in row-major format
+  nrows     :       u32 , /// the number of rows in the image
+  ncols     :       u32 , /// the number of columns in the image
+  // everything after ///! will become part of the last parameter's comments!
+                          ///! an out buffer into which the resulting
+                          /// sums are placed. Must have space 
+                          /// for exactly `nrows` elements
+  sums      : &mut [f32], // doc comments are illegal here, so use "///!"-split comment syntax from ↑
+) -> Result<(),String> {
+    todo!()
+} 
+```
+
 You have to document at least one parameter (or generic), but you don't have
 to document all of them. The example above will produce documentation as 
 if you had written a doc comment for the function like so:
