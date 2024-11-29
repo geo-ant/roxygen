@@ -55,6 +55,9 @@ fn sum_image_rows(
 }
 ```
 
+⚠️  **Renaming** the macros exported from this crate (`use ... as ...`) or renaming the
+crate itself (in your `Cargo.toml`) will make them stop working properly.
+
 ## Placing the Parameters-Section
 
 By default, the section documenting the parameters will go at the end
