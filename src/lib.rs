@@ -18,6 +18,7 @@
 //!    todo!()
 //! }
 //! ```
+//!
 //! This generates an additional section for the generic parameters right
 //! after the arguments section (if it exists).
 //! All types of generic arguments, including lifetimes and const-generics
@@ -34,6 +35,8 @@ mod util;
 const PARAM_SECTION: &str = "parameters_section";
 /// the name of this crate
 const ROXYGEN_CRATE: &str = "roxygen";
+/// the name of the main macro in this crate
+const ROXYGEN_MACRO: &str = ROXYGEN_CRATE;
 
 // helper macro "try" on a syn::Error, so that we can return it as a token stream
 macro_rules! try2 {
@@ -124,7 +127,7 @@ pub fn parameters_section(
     // cannot see the roxygen attribute
     let maybe_roxygen = function.attrs.iter().find(|attr| is_roxygen_main(attr));
     if let Some(attr) = maybe_roxygen {
-        syn::Error::new_spanned(attr,"The #[roxygen] attribute must come before the arguments section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
+        syn::Error::new_spanned(attr,"The #[roxygen] attribute must come before the parameters_section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
     } else {
         function.to_token_stream().into()
     }
@@ -149,7 +152,17 @@ fn is_parameters_section(attr: &Attribute) -> bool {
 
 /// check whether an attribute is the raw #[roxygen] main attribute.
 /// Stuck into this function, so I can refactor this logic
+//@note(geo) this logic won't work if the crate is renamed
 #[inline(always)]
 fn is_roxygen_main(attr: &Attribute) -> bool {
-    attr.path().is_ident("roxygen")
+    let path = attr.path();
+
+    if path.is_ident(ROXYGEN_MACRO) {
+        true
+    } else {
+        // checks for (::)roxygen::roxygen
+        path.segments.len() == 2
+            && path.segments[0].ident == ROXYGEN_CRATE
+            && path.segments[1].ident == ROXYGEN_MACRO
+    }
 }
