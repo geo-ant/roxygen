@@ -25,8 +25,8 @@
 use quote::{quote, ToTokens};
 use syn::{parse_macro_input, Attribute, ItemFn};
 use util::{
-    extract_documented_generics, extract_documented_parameters, extract_fn_doc_attrs,
-    make_doc_block,
+    extract_documented_generics, extract_documented_parameters,
+    extract_documented_parameters_shift_up, extract_fn_doc_attrs, make_doc_block,
 };
 mod util;
 
@@ -124,9 +124,10 @@ pub fn argdocpos(
     // extrac the doc attributes on the function itself
     let function_docs = try2!(extract_fn_doc_attrs(&mut function.attrs));
 
-    let documented_params = try2!(extract_documented_parameters(
+    let (doc_params_to_fn, documented_params) = try2!(extract_documented_parameters_shift_up(
         function.sig.inputs.iter_mut()
     ));
+    let maybe_empty_doc_par_to_fn: Vec<Attribute> = doc_params_to_fn.unwrap_or_else(|| vec![]);
 
     let documented_generics = try2!(extract_documented_generics(&mut function.sig.generics));
 
@@ -155,6 +156,7 @@ pub fn argdocpos(
 
     quote! {
         #(#docs_before)*
+        #(#maybe_empty_doc_par_to_fn)*
         #parameter_doc_block
         #generics_doc_block
         #maybe_empty_doc_line
