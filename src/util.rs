@@ -149,7 +149,10 @@ where
     Ok(documented_params)
 }
 
-/// same as extracting documentatio from parameters, but for generic types
+/// extract the documented generic parameters from a collection of generics as
+/// a collection of documented identifiers
+/// This will also remove all the doc comments from the collection of generics, but
+/// will leave all the other attributes untouched.
 pub fn extract_documented_generics(
     generics: &'_ mut Generics,
 ) -> Result<Vec<DocumentedIdent<'_>>, syn::Error> {
