@@ -102,6 +102,68 @@ pub fn roxygen(
     .into()
 }
 
+#[proc_macro_attribute]
+/// the principal attribute inside this crate that lets us document function arguments, but after them, not before
+pub fn argdocpos(
+    _attr: proc_macro::TokenStream,
+    item: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
+    let mut function: ItemFn = parse_macro_input!(item as ItemFn);
+
+    try2!(function.attrs.iter_mut().try_for_each(|attr| {
+        if is_argdocpos_main(attr) {
+            Err(syn::Error::new_spanned(
+                attr,
+                "Duplicate attribute. This attribute must only appear once.",
+            ))
+        } else {
+            Ok(())
+        }
+    }));
+
+    // extrac the doc attributes on the function itself
+    let function_docs = try2!(extract_fn_doc_attrs(&mut function.attrs));
+
+    let documented_params = try2!(extract_documented_parameters(
+        function.sig.inputs.iter_mut()
+    ));
+
+    let documented_generics = try2!(extract_documented_generics(&mut function.sig.generics));
+
+    let has_documented_params = !documented_params.is_empty();
+    let has_documented_generics = !documented_generics.is_empty();
+
+    if !has_documented_params && !has_documented_generics {
+        return syn::Error::new_spanned(
+            function.sig.ident,
+            "Function has no documented parameters or generics.\nDocument at least one function parameter or generic.",
+        )
+        .into_compile_error()
+        .into();
+    }
+
+    let parameter_doc_block = make_doc_block("Parameters", documented_params);
+    let generics_doc_block = make_doc_block("Generics", documented_generics);
+
+    let docs_before = function_docs.before_args_section;
+    let docs_after = function_docs.after_args_section;
+    let maybe_empty_doc_line = if !docs_after.is_empty() {
+        Some(quote! {#[doc=""]})
+    } else {
+        None
+    };
+
+    quote! {
+        #(#docs_before)*
+        #parameter_doc_block
+        #generics_doc_block
+        #maybe_empty_doc_line
+        #(#docs_after)*
+        #function
+    }
+    .into()
+}
+
 // this is to expose the helper attribute #[arguments_section].
 // The only logic about this attribute that this here function includes is
 // to make sure that this attribute is not placed before the #[roxygen]
@@ -137,4 +199,10 @@ fn is_parameters_section(attr: &Attribute) -> bool {
 #[inline(always)]
 fn is_roxygen_main(attr: &Attribute) -> bool {
     attr.path().is_ident("roxygen")
+}
+
+/// check whether an attribute is the raw #[argdocpos] main attribute.
+#[inline(always)]
+fn is_argdocpos_main(attr: &Attribute) -> bool {
+    attr.path().is_ident("argdocpos")
 }
