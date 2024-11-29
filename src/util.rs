@@ -149,7 +149,7 @@ where
     Ok(documented_params)
 }
 
-/// same as extracting documentatio from parameters, but for generic types
+/// same as extracting documentation from parameters, but for generic types
 pub fn extract_documented_generics(
     generics: &'_ mut Generics,
 ) -> Result<Vec<DocumentedIdent<'_>>, syn::Error> {
