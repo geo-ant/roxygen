@@ -78,6 +78,10 @@ fn foo(
 {}
 ```
 
+**Note**: if (for some reason) you want to rename the roxygen crate in your `Cargo.toml` file,
+please import the `#[parameters_section]` macro and use it as `#[parameters_section]`
+without the fully qualified path.
+
 ## Considerations
 
 It's a [long standing issue](https://github.com/rust-lang/rust/issues/57525)

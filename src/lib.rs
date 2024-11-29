@@ -127,9 +127,24 @@ pub fn parameters_section(
 
 /// check whether an attribute is the arguments section attribute.
 /// Stick this into it's own function so I can change the logic
+//@note(geo) this logic won't work if the crate is renamed
 #[inline(always)]
 fn is_parameters_section(attr: &Attribute) -> bool {
-    attr.path().is_ident("parameters_section")
+    const PARAM_SECTION: &str = "parameters_section";
+    const ROXYGEN: &str = "roxygen";
+    let path = attr.path();
+
+    if path.is_ident(PARAM_SECTION) {
+        true
+    } else if path.segments.len() == 2
+        && path.segments[0].ident == ROXYGEN
+        && path.segments[1].ident == PARAM_SECTION
+    {
+        true
+    } else {
+        // panic!("{}", path.to_token_stream().to_string());
+        false
+    }
 }
 
 /// check whether an attribute is the raw #[roxygen] main attribute.
