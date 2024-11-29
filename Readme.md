@@ -56,7 +56,7 @@ fn sum_image_rows(
 ```
 
 ⚠️  **Renaming** the macros exported from this crate (`use ... as ...`) or renaming the
-crate itself (in your `Cargo.toml`) will make them stop working properly.
+crate itself (in your `Cargo.toml`) will make all of this stop working properly.
 
 ## Placing the Parameters-Section
 
