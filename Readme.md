@@ -121,9 +121,10 @@ function parameters.
 ### Compile Times
 
 Macros will always increase your compile time to some degree, but I don't think
-this is a giant issue here for two reasons: firstly, this macro is to be used _sparingly_.
-Secondly, this macro just does some light parsing and shuffling around of
-the documentation tokens. It introduces no additional code. Thus, it doesn't
+this is a giant issue (after the roxygen dependency itself was compiled, that is):
+firstly, this macro is to be used _sparingly_. Secondly, this macro just does 
+some light parsing and shuffling around of the documentation tokens. It 
+introduces no additional code. Thus, it doesn't
 make your actual code more or less complex and should not affect compile
 times much (after this crate was compiled once), but I haven't
 measured it... so take it with a grain of sodium-chloride.
