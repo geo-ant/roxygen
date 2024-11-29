@@ -30,6 +30,11 @@ use util::{
 };
 mod util;
 
+/// parameter section macro name
+const PARAM_SECTION: &str = "parameters_section";
+/// the name of this crate
+const ROXYGEN_CRATE: &str = "roxygen";
+
 // helper macro "try" on a syn::Error, so that we can return it as a token stream
 macro_rules! try2 {
     ($ex:expr) => {
@@ -130,14 +135,12 @@ pub fn parameters_section(
 //@note(geo) this logic won't work if the crate is renamed
 #[inline(always)]
 fn is_parameters_section(attr: &Attribute) -> bool {
-    const PARAM_SECTION: &str = "parameters_section";
-    const ROXYGEN: &str = "roxygen";
     let path = attr.path();
 
     if path.is_ident(PARAM_SECTION) {
         true
     } else if path.segments.len() == 2
-        && path.segments[0].ident == ROXYGEN
+        && path.segments[0].ident == ROXYGEN_CRATE
         && path.segments[1].ident == PARAM_SECTION
     {
         true
