@@ -18,6 +18,7 @@
 //!    todo!()
 //! }
 //! ```
+//!
 //! This generates an additional section for the generic parameters right
 //! after the arguments section (if it exists).
 //! All types of generic arguments, including lifetimes and const-generics
@@ -126,7 +127,7 @@ pub fn parameters_section(
     // cannot see the roxygen attribute
     let maybe_roxygen = function.attrs.iter().find(|attr| is_roxygen_main(attr));
     if let Some(attr) = maybe_roxygen {
-        syn::Error::new_spanned(attr,"The #[roxygen] attribute must come before the arguments section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
+        syn::Error::new_spanned(attr,"The #[roxygen] attribute must come before the parameters_section attribute.\nPlace it before any of the doc comments for the function.").into_compile_error().into()
     } else {
         function.to_token_stream().into()
     }
