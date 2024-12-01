@@ -5,6 +5,7 @@
 ![lints](https://github.com/geo-ant/roxygen/actions/workflows/lints.yml/badge.svg?branch=main)
 [![crates](https://img.shields.io/crates/v/roxygen)](https://crates.io/crates/roxygen)
 ![maintenance-status](https://img.shields.io/badge/maintenance-passively--maintained-yellowgreen.svg)
+[![crates](https://raw.githubusercontent.com/geo-ant/user-content/refs/heads/main/ko-fi-support.svg)](https://ko-fi.com/geoant)
 
 The `#[roxygen]` attribute allows you to add doc-comments to function
 parameters, which is a _compile error_ in current Rust. Generic lifetimes,
