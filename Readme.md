@@ -45,8 +45,8 @@ if you had written a doc comment for the function like so:
 /// * `nrows`: the number of rows in the image
 /// * `ncols`: the number of columns in the image
 /// * `sums`: an out buffer into which the resulting
-///    sums are placed. Must have space 
-///    for exactly `nrows` elements
+///   sums are placed. Must have space 
+///   for exactly `nrows` elements
 fn sum_image_rows(
   image_data: &[f32],
   nrows: u32,

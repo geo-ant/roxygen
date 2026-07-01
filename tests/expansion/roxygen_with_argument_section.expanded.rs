@@ -6,7 +6,7 @@ use roxygen::*;
 ///
 /// * `bar`: this has one line of docs
 /// * `baz`: this has
-///    two lines of docs
+///   two lines of docs
 ///
 /// this goes after the arguments section
 fn foo(bar: u32, baz: String, _undocumented: i32) -> bool {
