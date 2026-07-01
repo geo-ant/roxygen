@@ -29,6 +29,11 @@ use util::{
     extract_documented_generics, extract_documented_parameters, extract_fn_doc_attrs,
     make_doc_block,
 };
+
+use crate::minfun::MinimalistItemFn;
+/// more general parsing that only parses function signature and after that
+/// just streams as is.
+mod minfun;
 mod util;
 
 /// parameter section macro name
@@ -54,7 +59,7 @@ pub fn roxygen(
     _attr: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    let mut function: ItemFn = parse_macro_input!(item as ItemFn);
+    let mut function = parse_macro_input!(item as MinimalistItemFn);
 
     try2!(function.attrs.iter_mut().try_for_each(|attr| {
         if is_roxygen_main(attr) {
