@@ -18,14 +18,13 @@ trait Foo {
     /// **Parameters**:
     ///
     /// * `first`: the first parameter
-    /// * `second`: the second, more interesting parameter
-    ///    with more interesting
+    /// * `second`:    with more interesting
     ///
-    ///    ```rust
-    ///      docs = very_interesting!();
-    ///    ```
+    ///       ```rust
+    ///         docs = very_interesting!();
+    ///       ```
     ///
-    ///    Sorry it's kinda late and I'm tired... but my professional
-    ///    honor is not letting me skip this test.
+    ///       Sorry it's kinda late and I'm tired... but my professional
+    ///       honor is not letting me skip this test.
     fn bar(first: i32, second: f32);
 }
