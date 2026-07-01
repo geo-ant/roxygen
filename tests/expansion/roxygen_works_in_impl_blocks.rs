@@ -4,15 +4,18 @@ struct Foo {
 }
 
 impl Foo {
+    #[roxygen]
     /// this is documentation
     /// and this is too
-    ///
-    /// **Parameters**:
-    ///
-    /// * `bar`: this has one line of docs
-    /// * `baz`: this has
-    ///    two lines of docs
-    fn foo(bar: u32, baz: String, _undocumented: i32) -> bool {
+    // but this is not
+    fn foo(
+        /// this has one line of docs
+        bar: u32,
+        /// this has
+        /// two lines of docs
+        baz: String,
+        _undocumented: i32,
+    ) -> bool {
         baz.len() > bar as usize
     }
 }
