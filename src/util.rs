@@ -201,7 +201,7 @@ where
         let first_line = prepend_to_doc_attribute(&format!(" * `{}`:", param.ident), first);
 
         // we just need to indent the other lines, if they exist
-        let next_lines = docs_iter.map(|attr| prepend_to_doc_attribute("   ", attr));
+        let next_lines = docs_iter.map(|attr| prepend_to_doc_attribute("  ", attr));
         quote! {
             #first_line
             #(#next_lines)*

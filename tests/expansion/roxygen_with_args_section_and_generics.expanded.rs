@@ -6,13 +6,13 @@ use roxygen::*;
 ///
 /// * `bar`: this has one line of docs
 /// * `baz`: this has
-///    two lines of docs
+///   two lines of docs
 ///
 /// **Generics**:
 ///
 /// * `a`: a lifetime
 /// * `T`: documentation for parameter T
-///    spans multiple lines
+///   spans multiple lines
 /// * `N`: a const generic
 ///
 /// this goes after the arguments section
