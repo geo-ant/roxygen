@@ -23,14 +23,14 @@ trait Foo {
     fn bar(
         /// the first parameter
         first: i32,
-        ///    with more interesting
+        /// the second parameter, with more interesting
         ///
-        ///    ```rust
-        ///      docs = very_interesting!();
-        ///    ```
+        /// ```rust
+        ///   docs = very_interesting!();
+        /// ```
         ///
-        ///    Sorry it's kinda late and I'm tired... but my professional
-        ///    honor is not letting me skip this test.
+        /// Sorry it's kinda late and I'm tired... but my professional
+        /// honor is not letting me skip this test.
         second: f32,
     );
 }
